@@ -8,40 +8,6 @@ class Kernel2D:
         self.kernel = kernel.astype(np.float32)
         self.height, self.width = kernel.shape
         self.center = (self.height // 2, self.width // 2)  # Floor division to get the center of the kernel
-    
-    @classmethod
-    def read_kernel_bin(cls, path: str):
-        """
-        Read the kernel from a binary file
-        :param path: The path to read the kernel
-        """
-        with open(path, "rb") as f:
-            # Reading the dimensions of the kernel
-            height, width = array.array('i', f.read(8))
-            kernel = np.frombuffer(f.read(), dtype=np.float32).reshape((height, width))
-        return cls(kernel)
-    
-    def save_kernel_txt(self, path: str):
-        """
-        Save the kernel to a text file
-        :param path: The path to save the kernel
-        """
-        # Adding the dimensions of the kernel to the file
-        with open(path, "w") as f:
-            f.write(f"{self.height} {self.width}\n")
-            for row in self.kernel:
-                f.write(" ".join(map(str, row)) + "\n")
-    
-    def save_kernel_bin(self, path: str):
-        """
-        Save the kernel to a binary file for use in C code in float format
-        :param path: The path to save the kernel
-        """
-        with open(path, "wb") as f:
-            # Writing dimensions of the kernel
-            f.write(array.array('i', [self.height, self.width]).tobytes())
-            f.write(array.array('f', self.kernel.flatten()).tobytes())
-
 
 def gaussian_kernel(size: int, sigma: float):
     """
